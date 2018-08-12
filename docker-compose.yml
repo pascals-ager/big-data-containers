@@ -1,0 +1,234 @@
+version: "2"
+
+services:
+
+  kafka-zk:
+    build:
+      context: ./kafka-zk
+      dockerfile: Dockerfile
+    image: kafka-zk
+    container_name: kafka-zk
+    hostname: kafka-zk
+    ports:
+      - "9092:9092"
+      - "2181:2181"
+    environment:
+      ADVERTISED_HOST: kafka-zk
+    networks:
+      kafka-cluster:
+        ipv4_address: 192.162.0.2
+    extra_hosts:
+      - "schema-registry:192.162.0.3"
+      - "kafka-zk:192.162.0.2"
+      - "node-master:192.162.0.4"
+      - "node-one:192.162.0.5"
+      - "node-two:192.162.0.6"
+      - "hive-metastore:192.162.0.7"
+      - "hive-server:192.162.0.8"
+      - "postgresql-metastore:192.162.0.9"
+
+  schema-registry:
+    build:
+      context: ./cp-schema-registry
+      dockerfile: Dockerfile
+    image: schema-registry
+    depends_on:
+      - kafka-zk
+    container_name: schema-registry
+    hostname: schema-registry
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'kafka-zk:2181'
+    networks:
+      kafka-cluster:
+        ipv4_address: 192.162.0.3
+    extra_hosts:
+      - "schema-registry:192.162.0.3"
+      - "kafka-zk:192.162.0.2"
+      - "node-master:192.162.0.4"
+      - "node-one:192.162.0.5"
+      - "node-two:192.162.0.6"
+      - "hive-metastore:192.162.0.7"
+      - "hive-server:192.162.0.8"
+      - "postgresql-metastore:192.162.0.9"
+
+  base:
+      build:
+          context: ./base
+          dockerfile: Dockerfile
+      image: base:advith
+      container_name: base
+
+  node-master:
+    depends_on:
+        - base
+    build:
+        context: ./node-master
+        dockerfile: Dockerfile
+    image: node-master:advith
+    container_name: node-master
+    volumes:
+        - ./node-master:/hadoop-data/dfs/name
+    ports:
+        - "8088:8088"
+        - "50070:50070"
+        - "18080:18080"
+    command: "/run.sh -d -node-master"
+    networks:
+        kafka-cluster:
+          ipv4_address: 192.162.0.4
+    extra_hosts:
+      - "schema-registry:192.162.0.3"
+      - "kafka-zk:192.162.0.2"
+      - "node-master:192.162.0.4"
+      - "node-one:192.162.0.5"
+      - "node-two:192.162.0.6"
+      - "hive-metastore:192.162.0.7"
+      - "hive-server:192.162.0.8"
+      - "postgresql-metastore:192.162.0.9"
+
+  node-one:
+    depends_on:
+        - base
+    build:
+        context: ./node-one
+        dockerfile: Dockerfile
+    image: node-one:advith
+    container_name: node-one
+    volumes:
+        - ./node-one:/hadoop-data/dfs/data
+    ports:
+        - "50075:50075"
+    command: "/run.sh -d -node-one"
+    networks:
+        kafka-cluster:
+          ipv4_address: 192.162.0.5
+    extra_hosts:
+      - "schema-registry:192.162.0.3"
+      - "kafka-zk:192.162.0.2"
+      - "node-master:192.162.0.4"
+      - "node-one:192.162.0.5"
+      - "node-two:192.162.0.6"
+      - "hive-metastore:192.162.0.7"
+      - "hive-server:192.162.0.8"
+      - "postgresql-metastore:192.162.0.9"
+
+  node-two:
+    depends_on:
+        - base
+    build:
+        context: ./node-two
+        dockerfile: Dockerfile
+    image: node-two:advith
+    container_name: node-two
+    volumes:
+        - ./node-two:/hadoop-data/dfs/data
+    ports:
+        - "50078:50075"
+    command: "/run.sh -d -node-two"
+    networks:
+        kafka-cluster:
+          ipv4_address: 192.162.0.6
+    extra_hosts:
+      - "schema-registry:192.162.0.3"
+      - "kafka-zk:192.162.0.2"
+      - "node-master:192.162.0.4"
+      - "node-one:192.162.0.5"
+      - "node-two:192.162.0.6"
+      - "hive-metastore:192.162.0.7"
+      - "hive-server:192.162.0.8"
+      - "postgresql-metastore:192.162.0.9"
+
+
+  postgresql-metastore:
+    build:
+      context: ./postgres-metastore
+      dockerfile: Dockerfile
+    image: postgresql-metastore
+    container_name: postgresql-metastore
+    networks:
+        kafka-cluster:
+          ipv4_address: 192.162.0.9
+    extra_hosts:
+      - "schema-registry:192.162.0.3"
+      - "kafka-zk:192.162.0.2"
+      - "node-master:192.162.0.4"
+      - "node-one:192.162.0.5"
+      - "node-two:192.162.0.6"
+      - "hive-metastore:192.162.0.7"
+      - "hive-server:192.162.0.8"
+      - "postgresql-metastore:192.162.0.9"      
+
+
+  hive-metastore:
+    depends_on:
+      - base
+    build:
+      context: ./hive
+      dockerfile: Dockerfile
+    image: hive-metastore
+    container_name: hive-metastore
+    env_file:
+      - hive/hadoop-hive.env
+    command: /opt/hive/bin/hive --service metastore
+    environment:
+      SERVICE_PRECONDITION: "node-master:50070 postgresql-metastore:5432"
+    ports:
+      - "9083:9083"
+    networks:
+        kafka-cluster:
+          ipv4_address: 192.162.0.7
+    extra_hosts:
+      - "schema-registry:192.162.0.3"
+      - "kafka-zk:192.162.0.2"
+      - "node-master:192.162.0.4"
+      - "node-one:192.162.0.5"
+      - "node-two:192.162.0.6"
+      - "hive-metastore:192.162.0.7"
+      - "hive-server:192.162.0.8"
+      - "postgresql-metastore:192.162.0.9"
+
+  hive-server:
+    depends_on:
+      - base
+    build:
+      context: ./hive
+      dockerfile: Dockerfile
+    image: hive-server
+    container_name: hive-server
+    env_file:
+      - hive/hadoop-hive.env
+    environment:
+      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/default"
+      SERVICE_PRECONDITION: "hive-metastore:9083"
+    ports:
+      - "10000:10000"
+    networks:
+        kafka-cluster:
+          ipv4_address: 192.162.0.8
+    extra_hosts:
+      - "schema-registry:192.162.0.3"
+      - "kafka-zk:192.162.0.2"
+      - "node-master:192.162.0.4"
+      - "node-one:192.162.0.5"
+      - "node-two:192.162.0.6"
+      - "hive-metastore:192.162.0.7"
+      - "hive-server:192.162.0.8"
+      - "postgresql-metastore:192.162.0.9"
+
+volumes:
+  node-master:
+  node-one:
+  node-two:
+
+
+
+networks:
+  kafka-cluster:
+    driver: bridge
+    ipam:
+      config:
+        - subnet:  192.162.0.0/16
+          gateway: 192.162.0.1
