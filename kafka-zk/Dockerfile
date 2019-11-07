@@ -1,16 +1,20 @@
-# Kafka and Zookeeper
-
 FROM java:openjdk-8-jre
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && \
-    apt-get install -y wget supervisor && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+RUN echo "deb [check-valid-until=no] http://cdn-fastly.deb.debian.org/debian jessie main" > /etc/apt/sources.list.d/jessie.list
+
+RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
+
+RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
+
+RUN apt-get -o Acquire::Check-Valid-Until=false update 
+RUN apt-get -o Acquire::Check-Valid-Until=false install -t jessie-backports -y --no-install-recommends wget supervisor  
+RUN rm -rf /var/lib/apt/lists/*  
+RUN apt-get clean
 
 
-ENV ZOOKEEPER_VERSION 3.4.12
+ENV ZOOKEEPER_VERSION 3.4.14
 ENV ZOOKEEPER_HOME /opt/zookeeper-"$ZOOKEEPER_VERSION"
 
 RUN wget -q http://ftp.cixug.es/apache/zookeeper/zookeeper-"$ZOOKEEPER_VERSION"/zookeeper-"$ZOOKEEPER_VERSION".tar.gz -O /tmp/zookeeper-"$ZOOKEEPER_VERSION".tgz
@@ -18,8 +22,8 @@ RUN ls -l /tmp/zookeeper-"$ZOOKEEPER_VERSION".tgz
 RUN tar xfz /tmp/zookeeper-"$ZOOKEEPER_VERSION".tgz -C /opt && rm /tmp/zookeeper-"$ZOOKEEPER_VERSION".tgz
 ADD assets/conf/zoo.cfg $ZOOKEEPER_HOME/conf
 
-ENV SCALA_VERSION 2.11
-ENV KAFKA_VERSION 1.1.0
+ENV SCALA_VERSION 2.12
+ENV KAFKA_VERSION 2.3.1
 ENV KAFKA_HOME /opt/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION"
 ENV KAFKA_DOWNLOAD_URL https://archive.apache.org/dist/kafka/"$KAFKA_VERSION"/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz
 

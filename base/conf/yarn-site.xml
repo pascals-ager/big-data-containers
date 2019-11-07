@@ -3,6 +3,11 @@
             <name>yarn.acl.enable</name>
             <value>0</value>
     </property>
+    
+    <property>
+            <name>yarn.resourcemanager.scheduler.class</name>
+            <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler</value>
+    </property>
 
     <property>
             <name>yarn.resourcemanager.hostname</name>
@@ -16,12 +21,12 @@
 
     <property>
         <name>yarn.nodemanager.resource.memory-mb</name>
-        <value>1536</value>
+        <value>7168</value>
     </property>
 
     <property>
         <name>yarn.scheduler.maximum-allocation-mb</name>
-        <value>1536</value>
+        <value>2800</value>
     </property>
 
     <property>

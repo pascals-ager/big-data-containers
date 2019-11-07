@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://node-master:8020</value>
+        <description>The name of the default file system. A URI whose scheme and authority determine the FileSystem
+            implementation. The uri's scheme determines the config property (fs.SCHEME.impl) naming the FileSystem
+            implementation class. The uri's authority is used to determine the host, port, etc. for a filesystem.
+        </description>
+    </property>
+    <property>
+        <name>hadoop.http.staticuser.user</name>
+        <value>root</value>
+        <description>The user name to filter as, on static web filters while
+            rendering content. An example use is the HDFS web UI (user to be used for browsing files).
+        </description>
+    </property>
+    <property>
+        <name>hadoop.proxyuser.root.hosts</name>
+        <value>*</value>
+    </property>
+    <property>
+        <name>hadoop.proxyuser.root.groups</name>
+        <value>*</value>
+    </property>
+
+</configuration>

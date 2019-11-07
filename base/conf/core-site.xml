@@ -20,4 +20,6 @@
 	        <name>hadoop.proxyuser.root.groups</name>
 	        <value>*</value>
 	    </property>
+
+        
     </configuration>

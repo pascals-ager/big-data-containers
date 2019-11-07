@@ -15,17 +15,25 @@ services:
     environment:
       ADVERTISED_HOST: kafka-zk
     networks:
-      kafka-cluster:
-        ipv4_address: 192.162.0.2
+      dev-cluster:
+        ipv4_address: 192.162.3.2
     extra_hosts:
-      - "schema-registry:192.162.0.3"
-      - "kafka-zk:192.162.0.2"
-      - "node-master:192.162.0.4"
-      - "node-one:192.162.0.5"
-      - "node-two:192.162.0.6"
-      - "hive-metastore:192.162.0.7"
-      - "hive-server:192.162.0.8"
-      - "postgresql-metastore:192.162.0.9"
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
 
   schema-registry:
     build:
@@ -42,23 +50,31 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'kafka-zk:2181'
     networks:
-      kafka-cluster:
-        ipv4_address: 192.162.0.3
+      dev-cluster:
+        ipv4_address: 192.162.3.3
     extra_hosts:
-      - "schema-registry:192.162.0.3"
-      - "kafka-zk:192.162.0.2"
-      - "node-master:192.162.0.4"
-      - "node-one:192.162.0.5"
-      - "node-two:192.162.0.6"
-      - "hive-metastore:192.162.0.7"
-      - "hive-server:192.162.0.8"
-      - "postgresql-metastore:192.162.0.9"
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
 
   base:
       build:
           context: ./base
           dockerfile: Dockerfile
-      image: base:advith
+      image: base:1.0
       container_name: base
 
   node-master:
@@ -67,27 +83,34 @@ services:
     build:
         context: ./node-master
         dockerfile: Dockerfile
-    image: node-master:advith
+    image: node-master:1.0
     container_name: node-master
-    volumes:
-        - ./node-master:/hadoop-data/dfs/name
     ports:
         - "8088:8088"
         - "50070:50070"
-        - "18080:18080"
+        - "18081:18081"
+        - "4040:4040"
     command: "/run.sh -d -node-master"
     networks:
-        kafka-cluster:
-          ipv4_address: 192.162.0.4
+        dev-cluster:
+          ipv4_address: 192.162.3.4
     extra_hosts:
-      - "schema-registry:192.162.0.3"
-      - "kafka-zk:192.162.0.2"
-      - "node-master:192.162.0.4"
-      - "node-one:192.162.0.5"
-      - "node-two:192.162.0.6"
-      - "hive-metastore:192.162.0.7"
-      - "hive-server:192.162.0.8"
-      - "postgresql-metastore:192.162.0.9"
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
 
   node-one:
     depends_on:
@@ -95,25 +118,31 @@ services:
     build:
         context: ./node-one
         dockerfile: Dockerfile
-    image: node-one:advith
+    image: node-one:1.0
     container_name: node-one
-    volumes:
-        - ./node-one:/hadoop-data/dfs/data
     ports:
         - "50075:50075"
     command: "/run.sh -d -node-one"
     networks:
-        kafka-cluster:
-          ipv4_address: 192.162.0.5
+        dev-cluster:
+          ipv4_address: 192.162.3.5
     extra_hosts:
-      - "schema-registry:192.162.0.3"
-      - "kafka-zk:192.162.0.2"
-      - "node-master:192.162.0.4"
-      - "node-one:192.162.0.5"
-      - "node-two:192.162.0.6"
-      - "hive-metastore:192.162.0.7"
-      - "hive-server:192.162.0.8"
-      - "postgresql-metastore:192.162.0.9"
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
 
   node-two:
     depends_on:
@@ -121,114 +150,270 @@ services:
     build:
         context: ./node-two
         dockerfile: Dockerfile
-    image: node-two:advith
+    image: node-two:1.0
     container_name: node-two
-    volumes:
-        - ./node-two:/hadoop-data/dfs/data
     ports:
         - "50078:50075"
     command: "/run.sh -d -node-two"
     networks:
-        kafka-cluster:
-          ipv4_address: 192.162.0.6
+        dev-cluster:
+          ipv4_address: 192.162.3.6
     extra_hosts:
-      - "schema-registry:192.162.0.3"
-      - "kafka-zk:192.162.0.2"
-      - "node-master:192.162.0.4"
-      - "node-one:192.162.0.5"
-      - "node-two:192.162.0.6"
-      - "hive-metastore:192.162.0.7"
-      - "hive-server:192.162.0.8"
-      - "postgresql-metastore:192.162.0.9"
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
 
-
-  postgresql-metastore:
+  node-three:
+    depends_on:
+        - base
     build:
-      context: ./postgres-metastore
-      dockerfile: Dockerfile
-    image: postgresql-metastore
-    container_name: postgresql-metastore
+        context: ./node-three
+        dockerfile: Dockerfile
+    image: node-three:1.0
+    container_name: node-three
+    ports:
+        - "50080:50075"
+    command: "/run.sh -d -node-three"
     networks:
-        kafka-cluster:
-          ipv4_address: 192.162.0.9
+        dev-cluster:
+          ipv4_address: 192.162.3.17
     extra_hosts:
-      - "schema-registry:192.162.0.3"
-      - "kafka-zk:192.162.0.2"
-      - "node-master:192.162.0.4"
-      - "node-one:192.162.0.5"
-      - "node-two:192.162.0.6"
-      - "hive-metastore:192.162.0.7"
-      - "hive-server:192.162.0.8"
-      - "postgresql-metastore:192.162.0.9"      
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
 
+  postgresql-metastore-three:
+    build:
+      context: ./postgres-metastore-three
+      dockerfile: Dockerfile
+    image: postgresql-metastore-three
+    container_name: postgresql-metastore-three
+    networks:
+        dev-cluster:
+          ipv4_address: 192.162.3.16
+    extra_hosts:
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
 
-  hive-metastore:
+  hive-metastore-three:
     depends_on:
       - base
     build:
-      context: ./hive
+      context: ./hive-three
       dockerfile: Dockerfile
-    image: hive-metastore
-    container_name: hive-metastore
+    image: hive-metastore-three
+    container_name: hive-metastore-three
     env_file:
-      - hive/hadoop-hive.env
-    command: /opt/hive/bin/hive --service metastore
+      - hive-three/hadoop-hive.env
+    command:  /opt/hive/bin/hive --service metastore
     environment:
-      SERVICE_PRECONDITION: "node-master:50070 postgresql-metastore:5432"
+      SERVICE_PRECONDITION: "node-master:50070 postgresql-metastore-three:5432"
     ports:
       - "9083:9083"
     networks:
-        kafka-cluster:
-          ipv4_address: 192.162.0.7
+        dev-cluster:
+          ipv4_address: 192.162.3.15
     extra_hosts:
-      - "schema-registry:192.162.0.3"
-      - "kafka-zk:192.162.0.2"
-      - "node-master:192.162.0.4"
-      - "node-one:192.162.0.5"
-      - "node-two:192.162.0.6"
-      - "hive-metastore:192.162.0.7"
-      - "hive-server:192.162.0.8"
-      - "postgresql-metastore:192.162.0.9"
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
 
-  hive-server:
+  hive-server-three:
     depends_on:
       - base
     build:
-      context: ./hive
+      context: ./hive-three
       dockerfile: Dockerfile
-    image: hive-server
-    container_name: hive-server
+    image: hive-server-three
+    container_name: hive-server-three
     env_file:
-      - hive/hadoop-hive.env
+      - hive-three/hadoop-hive.env
     environment:
-      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/default"
-      SERVICE_PRECONDITION: "hive-metastore:9083"
+      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore-three/default"
+      SERVICE_PRECONDITION: "hive-metastore-three:9083"
     ports:
       - "10000:10000"
     networks:
-        kafka-cluster:
-          ipv4_address: 192.162.0.8
+        dev-cluster:
+          ipv4_address: 192.162.3.14
     extra_hosts:
-      - "schema-registry:192.162.0.3"
-      - "kafka-zk:192.162.0.2"
-      - "node-master:192.162.0.4"
-      - "node-one:192.162.0.5"
-      - "node-two:192.162.0.6"
-      - "hive-metastore:192.162.0.7"
-      - "hive-server:192.162.0.8"
-      - "postgresql-metastore:192.162.0.9"
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18" 
+      - "nifi-one-dot-ten:192.162.3.19"
+
+  nifi:
+    build:
+      context: ./nifi
+      dockerfile: Dockerfile
+    image: nifi
+    container_name: nifi
+    ports:
+      - "8080:8080" # Unsecured HTTP Web Port
+      - "19092:19092" # JMX
+    networks:
+        dev-cluster:
+          ipv4_address: 192.162.3.11
+    environment:
+      - NIFI_WEB_HTTP_PORT=8080
+    extra_hosts:
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"    
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"   
+      - "nifi-one-dot-ten:192.162.3.19"
+
+  nifi-one-dot-nine:
+    build:
+      context: ./nifi-one-dot-nine
+      dockerfile: Dockerfile
+    image: nifi-one-dot-nine
+    container_name: nifi-one-dot-nine
+    ports:
+      - "8083:8083" # Unsecured HTTP Web Port
+      - "19092:19092" # JMX
+    networks:
+        dev-cluster:
+          ipv4_address: 192.162.3.18
+    environment:
+      - NIFI_WEB_HTTP_PORT=8083
+    extra_hosts:
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"    
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
+
+  nifi-one-dot-ten:
+    build:
+      context: ./nifi-one-dot-ten
+      dockerfile: Dockerfile
+    image: nifi-one-dot-ten
+    container_name: nifi-one-dot-ten
+    ports:
+      - "8085:8085" # Unsecured HTTP Web Port
+      - "19092:19092" # JMX
+    networks:
+        dev-cluster:
+          ipv4_address: 192.162.3.19
+    environment:
+      - NIFI_WEB_HTTP_PORT=8085
+    extra_hosts:
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-three:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"    
+      - "node-three:192.162.3.17"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
 
 volumes:
   node-master:
   node-one:
   node-two:
-
+  node-three:
 
 
 networks:
-  kafka-cluster:
+  dev-cluster:
     driver: bridge
     ipam:
       config:
-        - subnet:  192.162.0.0/16
-          gateway: 192.162.0.1
+        - subnet:  192.162.3.0/16
+          gateway: 192.162.3.1
