@@ -1,0 +1,7 @@
+<providers>
+    <flowPersistenceProvider>
+        <class>org.apache.nifi.registry.provider.flow.git.GitFlowPersistenceProvider</class>
+        <property name="Flow Storage Directory">./flow_storage</property>
+        <property name="Remote To Push"></property>  
+    </flowPersistenceProvider>
+</providers>

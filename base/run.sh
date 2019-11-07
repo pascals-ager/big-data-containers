@@ -1,6 +1,6 @@
 #!/bin/bash
 
-: ${HADOOP_VERSION:=2.8.4}
+: ${HADOOP_VERSION:=2.8.5}
 : ${HADOOP_PREFIX:=/opt/hadoop-$HADOOP_VERSION}
 : ${HADOOP_CONF_DIR:=$HADOOP_PREFIX/etc/hadoop}
 
@@ -63,6 +63,10 @@ fi
 
 if [[ $1 = "-node-two" || $2 = "-node-two" ]]; then
   echo "starting datanode-two"
+fi
+
+if [[ $1 = "-node-three" || $2 = "-node-three" ]]; then
+  echo "starting datanode-three"
 fi
 
 if [[ $1 = "-d" || $2 = "-d" ]]; then

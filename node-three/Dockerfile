@@ -1,0 +1,14 @@
+FROM base:1.0
+
+HEALTHCHECK CMD curl -f http://localhost:50075/ || exit 1
+
+RUN mkdir -p /hadoop-data/dfs/datathree
+VOLUME /hadoop-data/dfs/datathree
+
+# Expose http port for datanode
+EXPOSE 50075
+
+# Expose ssh port
+EXPOSE 2122
+
+CMD ["/run.sh", "-d"]

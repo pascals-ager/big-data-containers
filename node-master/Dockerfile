@@ -1,5 +1,4 @@
-FROM base:advith
-MAINTAINER Advith Nagappa
+FROM base:1.0
 
 HEALTHCHECK CMD curl -f http://localhost:50070/ || exit 1
 
@@ -28,6 +27,9 @@ EXPOSE 8031
 EXPOSE 8032
 
 # Expose spark history server http port
-EXPOSE 18080
+EXPOSE 18081
+
+# Expose spark Web UI
+EXPOSE 4040
 
 CMD ["/run.sh", "-d"]
