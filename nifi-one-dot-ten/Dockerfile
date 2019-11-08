@@ -36,6 +36,9 @@ ENV NIFI_LOG_DIR=${NIFI_HOME}/logs
 
 ADD sh/ ${NIFI_BASE_DIR}/scripts/
 
+COPY /tars/nifi-toolkit-${NIFI_VERSION}-bin.zip ${NIFI_BASE_DIR}/nifi-toolkit-${NIFI_VERSION}-bin.zip
+COPY /tars/nifi-${NIFI_VERSION}-bin.zip ${NIFI_BASE_DIR}/nifi-${NIFI_VERSION}-bin.zip
+
 # Setup NiFi user and create necessary directories
 RUN groupadd -g ${GID} nifi || groupmod -n nifi `getent group ${GID} | cut -d: -f1` \
     && useradd --shell /bin/bash -u ${UID} -g ${GID} -m nifi \
@@ -47,17 +50,13 @@ RUN groupadd -g ${GID} nifi || groupmod -n nifi `getent group ${GID} | cut -d: -
 USER nifi
 
 # Download, validate, and expand Apache NiFi Toolkit binary.
-RUN curl -fSL ${MIRROR_BASE_URL}/${NIFI_TOOLKIT_BINARY_PATH} -o ${NIFI_BASE_DIR}/nifi-toolkit-${NIFI_VERSION}-bin.zip \
-    && echo "$(curl ${BASE_URL}/${NIFI_TOOLKIT_BINARY_PATH}.sha256) *${NIFI_BASE_DIR}/nifi-toolkit-${NIFI_VERSION}-bin.zip" | sha256sum -c - \
-    && unzip ${NIFI_BASE_DIR}/nifi-toolkit-${NIFI_VERSION}-bin.zip -d ${NIFI_BASE_DIR} \
+RUN unzip ${NIFI_BASE_DIR}/nifi-toolkit-${NIFI_VERSION}-bin.zip -d ${NIFI_BASE_DIR} \
     && rm ${NIFI_BASE_DIR}/nifi-toolkit-${NIFI_VERSION}-bin.zip \
     && mv ${NIFI_BASE_DIR}/nifi-toolkit-${NIFI_VERSION} ${NIFI_TOOLKIT_HOME} \
     && ln -s ${NIFI_TOOLKIT_HOME} ${NIFI_BASE_DIR}/nifi-toolkit-${NIFI_VERSION}
 
 # Download, validate, and expand Apache NiFi binary.
-RUN curl -fSL ${MIRROR_BASE_URL}/${NIFI_BINARY_PATH} -o ${NIFI_BASE_DIR}/nifi-${NIFI_VERSION}-bin.zip \
-    && echo "$(curl ${BASE_URL}/${NIFI_BINARY_PATH}.sha256) *${NIFI_BASE_DIR}/nifi-${NIFI_VERSION}-bin.zip" | sha256sum -c - \
-    && unzip ${NIFI_BASE_DIR}/nifi-${NIFI_VERSION}-bin.zip -d ${NIFI_BASE_DIR} \
+RUN unzip ${NIFI_BASE_DIR}/nifi-${NIFI_VERSION}-bin.zip -d ${NIFI_BASE_DIR} \
     && rm ${NIFI_BASE_DIR}/nifi-${NIFI_VERSION}-bin.zip \
     && mv ${NIFI_BASE_DIR}/nifi-${NIFI_VERSION} ${NIFI_HOME} \
     && mkdir -p ${NIFI_HOME}/conf \
@@ -81,9 +80,9 @@ ADD conf/ ${NIFI_HOME}/hdfs_conf/
 RUN rm ${NIFI_HOME}/conf/bootstrap.conf \
     && cp ${NIFI_HOME}/hdfs_conf/bootstrap.conf ${NIFI_HOME}/conf/
 
-COPY nars/nifi-hive3-nar-1.10.0.nar ${NIFI_HOME}/lib/
-COPY nars/nifi-date-transformations-1.4.nar ${NIFI_HOME}/lib/
-COPY nars/nifi-jolt-failure-handler-1.2.nar ${NIFI_HOME}/lib/
+#COPY nars/nifi-hive3-nar-1.10.0.nar ${NIFI_HOME}/lib/
+#COPY nars/nifi-date-transformations-1.4.nar ${NIFI_HOME}/lib/
+#COPY nars/nifi-jolt-failure-handler-1.2.nar ${NIFI_HOME}/lib/
 
 # Probably not the best practice to define volumes with the image
 #VOLUME ${NIFI_LOG_DIR} \

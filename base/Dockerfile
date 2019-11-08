@@ -20,8 +20,9 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 
 ENV HADOOP_VERSION 2.8.5
 ENV HADOOP_URL https://www.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
+COPY /tars/hadoop-$HADOOP_VERSION.tar.gz /tmp/hadoop.tar.gz
 RUN set -x \
-    && curl -fkSL "$HADOOP_URL" -o /tmp/hadoop.tar.gz \
+    # && curl -fkSL "$HADOOP_URL" -o /tmp/hadoop.tar.gz \
     # && curl -fSL "$HADOOP_URL.asc" -o /tmp/hadoop.tar.gz.asc \
     # && gpg --verify /tmp/hadoop.tar.gz.asc \
     && tar -xvf /tmp/hadoop.tar.gz -C /opt/ \
@@ -69,8 +70,9 @@ RUN chmod a+x /run.sh
 ENV SPARK_VERSION 2.4.4
 ENV SPARK_HADOOP_BUILD 2.7
 ENV SPARK_URL https://www-eu.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_BUILD.tgz
+COPY /tars/spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_BUILD.tgz /tmp/spark.tar.tgz
 RUN set -x \
-    && curl -fkSL "$SPARK_URL" -o /tmp/spark.tar.tgz \
+    #&& curl -fkSL "$SPARK_URL" -o /tmp/spark.tar.tgz \
     #&& curl -fSL "$SPARK_URL.asc" -o /tmp/spark.tar.gz.asc \
     #&& gpg --verify /tmp/spark.tar.gz.asc \
     && tar -xvf /tmp/spark.tar.tgz -C /opt/ \

@@ -8,13 +8,15 @@ ENV PATH $HIVE_HOME/bin:$PATH
 
 WORKDIR /opt
 
+COPY /tars/apache-hive-$HIVE_VERSION-bin.tar.gz /opt/apache-hive-$HIVE_VERSION-bin.tar.gz
+COPY /jars $HIVE_HOME/lib/postgresql-jdbc.jar
 #Install Hive and PostgreSQL JDBC
 RUN apt-get -o Acquire::Check-Valid-Until=false update \
 	&& apt-get install -y --no-install-recommends wget procps \
-	&& wget https://archive.apache.org/dist/hive/hive-$HIVE_VERSION/apache-hive-$HIVE_VERSION-bin.tar.gz \
+	# && wget https://archive.apache.org/dist/hive/hive-$HIVE_VERSION/apache-hive-$HIVE_VERSION-bin.tar.gz \
 	&& tar -xzvf apache-hive-$HIVE_VERSION-bin.tar.gz \
 	&& mv apache-hive-$HIVE_VERSION-bin hive \
-	&& wget https://jdbc.postgresql.org/download/postgresql-9.4.1212.jar -O $HIVE_HOME/lib/postgresql-jdbc.jar \
+	# && wget https://jdbc.postgresql.org/download/postgresql-9.4.1212.jar -O $HIVE_HOME/lib/postgresql-jdbc.jar \
 	&& rm apache-hive-$HIVE_VERSION-bin.tar.gz  \
 	&& apt-get -o Acquire::Check-Valid-Until=false --purge remove -y wget \
 	&& apt-get -o Acquire::Check-Valid-Until=false clean \
