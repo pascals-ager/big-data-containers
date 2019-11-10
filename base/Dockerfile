@@ -1,18 +1,12 @@
-FROM debian:8
-
-RUN echo "deb [check-valid-until=no] http://cdn-fastly.deb.debian.org/debian jessie main" > /etc/apt/sources.list.d/jessie.list
-
-RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
-
-RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
+FROM debian:stretch
 
 RUN apt-get -o Acquire::Check-Valid-Until=false update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Check-Valid-Until=false install -t jessie-backports -y --no-install-recommends openjdk-8-jdk:amd64=8u171-b11-1~bpo8+1 \
-    && DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Check-Valid-Until=false install -y --no-install-recommends net-tools=1.60-26+b1 curl \
-    && apt-get -o Acquire::Check-Valid-Until=false install -y --no-install-recommends netcat=1.10-41 \
-    && apt-get -o Acquire::Check-Valid-Until=false install -y --no-install-recommends openssh-server=1:6.7p1-5+deb8u8 \
-    && apt-get -o Acquire::Check-Valid-Until=false install -y --no-install-recommends openssh-client=1:6.7p1-5+deb8u8 \
-    && apt-get -o Acquire::Check-Valid-Until=false install -y --no-install-recommends wget=1.16-1+deb8u6 \
+    && DEBIAN_FRONTEND=noninteractive apt-get  install -y --no-install-recommends openjdk-8-jdk:amd64 \
+    && DEBIAN_FRONTEND=noninteractive apt-get  install -y --no-install-recommends net-tools curl \
+    && apt-get  install -y --no-install-recommends netcat \
+    && apt-get  install -y --no-install-recommends openssh-server \
+    && apt-get  install -y --no-install-recommends openssh-client \
+    && apt-get  install -y --no-install-recommends wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -33,6 +27,7 @@ RUN set -x \
 RUN mkdir /opt/hadoop-$HADOOP_VERSION/logs
 
 ENV HADOOP_PREFIX=/opt/hadoop-$HADOOP_VERSION
+ENV HADOOP_HOME=/opt/hadoop-$HADOOP_VERSION
 ENV HADOOP_COMMON_HOME=$HADOOP_PREFIX
 ENV HADOOP_HDFS_HOME=$HADOOP_PREFIX
 ENV HADOOP_MAPRED_HOME=$HADOOP_PREFIX

@@ -25,13 +25,15 @@ services:
       - "node-two:192.162.3.6"
       - "hive-metastore-two:192.162.3.7"
       - "hive-server-two:192.162.3.8"
-      - "postgresql-metastore-three:192.162.3.9"
+      - "postgresql-metastore-two:192.162.3.9"
       - "zookeeper:192.162.3.10"
       - "nifi:192.162.3.11"
       - "hive-server-three:192.162.3.14"
       - "hive-metastore-three:192.162.3.15"
       - "postgresql-metastore-three:192.162.3.16"
       - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
       - "nifi-one-dot-nine:192.162.3.18"
       - "nifi-one-dot-ten:192.162.3.19"
 
@@ -60,13 +62,15 @@ services:
       - "node-two:192.162.3.6"
       - "hive-metastore-two:192.162.3.7"
       - "hive-server-two:192.162.3.8"
-      - "postgresql-metastore-three:192.162.3.9"
+      - "postgresql-metastore-two:192.162.3.9"
       - "zookeeper:192.162.3.10"
       - "nifi:192.162.3.11"
       - "hive-server-three:192.162.3.14"
       - "hive-metastore-three:192.162.3.15"
       - "postgresql-metastore-three:192.162.3.16"
       - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
       - "nifi-one-dot-nine:192.162.3.18"
       - "nifi-one-dot-ten:192.162.3.19"
 
@@ -102,13 +106,15 @@ services:
       - "node-two:192.162.3.6"
       - "hive-metastore-two:192.162.3.7"
       - "hive-server-two:192.162.3.8"
-      - "postgresql-metastore-three:192.162.3.9"
+      - "postgresql-metastore-two:192.162.3.9"
       - "zookeeper:192.162.3.10"
       - "nifi:192.162.3.11"
       - "hive-server-three:192.162.3.14"
       - "hive-metastore-three:192.162.3.15"
       - "postgresql-metastore-three:192.162.3.16"
       - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
       - "nifi-one-dot-nine:192.162.3.18"
       - "nifi-one-dot-ten:192.162.3.19"
 
@@ -134,13 +140,15 @@ services:
       - "node-two:192.162.3.6"
       - "hive-metastore-two:192.162.3.7"
       - "hive-server-two:192.162.3.8"
-      - "postgresql-metastore-three:192.162.3.9"
+      - "postgresql-metastore-two:192.162.3.9"
       - "zookeeper:192.162.3.10"
       - "nifi:192.162.3.11"
       - "hive-server-three:192.162.3.14"
       - "hive-metastore-three:192.162.3.15"
       - "postgresql-metastore-three:192.162.3.16"
       - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
       - "nifi-one-dot-nine:192.162.3.18"
       - "nifi-one-dot-ten:192.162.3.19"
 
@@ -166,13 +174,15 @@ services:
       - "node-two:192.162.3.6"
       - "hive-metastore-two:192.162.3.7"
       - "hive-server-two:192.162.3.8"
-      - "postgresql-metastore-three:192.162.3.9"
+      - "postgresql-metastore-two:192.162.3.9"
       - "zookeeper:192.162.3.10"
       - "nifi:192.162.3.11"
       - "hive-server-three:192.162.3.14"
       - "hive-metastore-three:192.162.3.15"
       - "postgresql-metastore-three:192.162.3.16"
       - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
       - "nifi-one-dot-nine:192.162.3.18"
       - "nifi-one-dot-ten:192.162.3.19"
 
@@ -198,13 +208,83 @@ services:
       - "node-two:192.162.3.6"
       - "hive-metastore-two:192.162.3.7"
       - "hive-server-two:192.162.3.8"
-      - "postgresql-metastore-three:192.162.3.9"
+      - "postgresql-metastore-two:192.162.3.9"
       - "zookeeper:192.162.3.10"
       - "nifi:192.162.3.11"
       - "hive-server-three:192.162.3.14"
       - "hive-metastore-three:192.162.3.15"
       - "postgresql-metastore-three:192.162.3.16"
       - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
+
+  node-four:
+    depends_on:
+      - base
+    build:
+      context: ./node-four
+      dockerfile: Dockerfile
+    image: node-four:1.0
+    container_name: node-four
+    ports:
+      - "50082:50075"
+    command: "/run.sh -d -node-four"
+    networks:
+      dev-cluster:
+        ipv4_address: 192.162.3.20
+    extra_hosts:
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-two:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
+      - "nifi-one-dot-nine:192.162.3.18"
+      - "nifi-one-dot-ten:192.162.3.19"
+
+  node-five:
+    depends_on:
+      - base
+    build:
+      context: ./node-five
+      dockerfile: Dockerfile
+    image: node-five:1.0
+    container_name: node-five
+    ports:
+      - "50083:50075"
+    command: "/run.sh -d -node-five"
+    networks:
+      dev-cluster:
+        ipv4_address: 192.162.3.21
+    extra_hosts:
+      - "schema-registry:192.162.3.3"
+      - "kafka-zk:192.162.3.2"
+      - "node-master:192.162.3.4"
+      - "node-one:192.162.3.5"
+      - "node-two:192.162.3.6"
+      - "hive-metastore-two:192.162.3.7"
+      - "hive-server-two:192.162.3.8"
+      - "postgresql-metastore-two:192.162.3.9"
+      - "zookeeper:192.162.3.10"
+      - "nifi:192.162.3.11"
+      - "hive-server-three:192.162.3.14"
+      - "hive-metastore-three:192.162.3.15"
+      - "postgresql-metastore-three:192.162.3.16"
+      - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
       - "nifi-one-dot-nine:192.162.3.18"
       - "nifi-one-dot-ten:192.162.3.19"
 
@@ -214,6 +294,8 @@ services:
       dockerfile: Dockerfile
     image: postgresql-metastore-three
     container_name: postgresql-metastore-three
+    ports:
+      - "5432:5432"
     networks:
         dev-cluster:
           ipv4_address: 192.162.3.16
@@ -225,13 +307,15 @@ services:
       - "node-two:192.162.3.6"
       - "hive-metastore-two:192.162.3.7"
       - "hive-server-two:192.162.3.8"
-      - "postgresql-metastore-three:192.162.3.9"
+      - "postgresql-metastore-two:192.162.3.9"
       - "zookeeper:192.162.3.10"
       - "nifi:192.162.3.11"
       - "hive-server-three:192.162.3.14"
       - "hive-metastore-three:192.162.3.15"
       - "postgresql-metastore-three:192.162.3.16"
       - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
       - "nifi-one-dot-nine:192.162.3.18"
       - "nifi-one-dot-ten:192.162.3.19"
 
@@ -245,7 +329,7 @@ services:
     container_name: hive-metastore-three
     env_file:
       - hive-three/hadoop-hive.env
-    command:  /opt/hive/bin/hive --service metastore
+    command:  "/opt/hive/bin/hive --service metastore"
     environment:
       SERVICE_PRECONDITION: "node-master:50070 postgresql-metastore-three:5432"
     ports:
@@ -261,13 +345,15 @@ services:
       - "node-two:192.162.3.6"
       - "hive-metastore-two:192.162.3.7"
       - "hive-server-two:192.162.3.8"
-      - "postgresql-metastore-three:192.162.3.9"
+      - "postgresql-metastore-two:192.162.3.9"
       - "zookeeper:192.162.3.10"
       - "nifi:192.162.3.11"
       - "hive-server-three:192.162.3.14"
       - "hive-metastore-three:192.162.3.15"
       - "postgresql-metastore-three:192.162.3.16"
       - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
       - "nifi-one-dot-nine:192.162.3.18"
       - "nifi-one-dot-ten:192.162.3.19"
 
@@ -297,14 +383,16 @@ services:
       - "node-two:192.162.3.6"
       - "hive-metastore-two:192.162.3.7"
       - "hive-server-two:192.162.3.8"
-      - "postgresql-metastore-three:192.162.3.9"
+      - "postgresql-metastore-two:192.162.3.9"
       - "zookeeper:192.162.3.10"
       - "nifi:192.162.3.11"
       - "hive-server-three:192.162.3.14"
       - "hive-metastore-three:192.162.3.15"
       - "postgresql-metastore-three:192.162.3.16"
       - "node-three:192.162.3.17"
-      - "nifi-one-dot-nine:192.162.3.18" 
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
+      - "nifi-one-dot-nine:192.162.3.18"
       - "nifi-one-dot-ten:192.162.3.19"
 
 #  nifi:
@@ -329,7 +417,7 @@ services:
 #      - "node-two:192.162.3.6"
 #      - "hive-metastore-two:192.162.3.7"
 #      - "hive-server-two:192.162.3.8"
-#      - "postgresql-metastore-three:192.162.3.9"
+#      - "postgresql-metastore-two:192.162.3.9"
 #      - "zookeeper:192.162.3.10"
 #      - "nifi:192.162.3.11"
 #      - "hive-server-three:192.162.3.14"
@@ -361,7 +449,7 @@ services:
 #      - "node-two:192.162.3.6"
 #      - "hive-metastore-two:192.162.3.7"
 #      - "hive-server-two:192.162.3.8"
-#      - "postgresql-metastore-three:192.162.3.9"
+#      - "postgresql-metastore-two:192.162.3.9"
 #      - "zookeeper:192.162.3.10"
 #      - "nifi:192.162.3.11"
 #      - "hive-server-three:192.162.3.14"
@@ -394,13 +482,15 @@ services:
       - "node-two:192.162.3.6"
       - "hive-metastore-two:192.162.3.7"
       - "hive-server-two:192.162.3.8"
-      - "postgresql-metastore-three:192.162.3.9"
+      - "postgresql-metastore-two:192.162.3.9"
       - "zookeeper:192.162.3.10"
       - "nifi:192.162.3.11"
       - "hive-server-three:192.162.3.14"
       - "hive-metastore-three:192.162.3.15"
-      - "postgresql-metastore-three:192.162.3.16"    
+      - "postgresql-metastore-three:192.162.3.16"
       - "node-three:192.162.3.17"
+      - "node-four:192.162.3.20"
+      - "node-five:192.162.3.21"
       - "nifi-one-dot-nine:192.162.3.18"
       - "nifi-one-dot-ten:192.162.3.19"
 
@@ -409,6 +499,8 @@ volumes:
   node-one:
   node-two:
   node-three:
+  node-four:
+  node-five:
 
 
 networks:

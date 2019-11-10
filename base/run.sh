@@ -69,6 +69,14 @@ if [[ $1 = "-node-three" || $2 = "-node-three" ]]; then
   echo "starting datanode-three"
 fi
 
+if [[ $1 = "-node-four" || $2 = "-node-four" ]]; then
+  echo "starting datanode-four"
+fi
+
+if [[ $1 = "-node-five" || $2 = "-node-five" ]]; then
+  echo "starting datanode-five"
+fi
+
 if [[ $1 = "-d" || $2 = "-d" ]]; then
   while true; do sleep 1000; done
 fi
