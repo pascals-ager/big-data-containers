@@ -505,8 +505,4 @@ volumes:
 
 networks:
   dev-cluster:
-    driver: bridge
-    ipam:
-      config:
-        - subnet:  192.162.3.0/16
-          gateway: 192.162.3.1
+    external: true
